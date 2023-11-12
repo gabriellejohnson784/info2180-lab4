@@ -1,18 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
-    var searchButton = document.getElementById("searchButton");
+    var searchButton = document.querySelector("#searchButton");
+    var searchInput = document.querySelector("#searchInput"); // Assuming you have an input field with id "searchInput"
+    var result = document.querySelector("#result");
 
     searchButton.addEventListener("click", function () {
         // Perform AJAX request
         var xrequest = new XMLHttpRequest();
-        xrequest.open("GET", "superheroes.php", true);
+        xrequest.open("GET", "superheroes.php?query=" + encodeURIComponent(searchInput.value.trim()), true);
 
         xrequest.onreadystatechange = function () {
             if (xrequest.readyState === XMLHttpRequest.DONE) {
-                if (xrequest.status === 200) {
-                    alert(xrequest.responseText);
-                } else {
-                    console.error("Error: HTTP request failed with status", xrequest.status);
-                }
+                handleAjaxResponse(xrequest);
             }
         };
 
@@ -22,5 +20,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         xrequest.send();
     });
-});
 
+    function handleAjaxResponse(xrequest) {
+        if (xrequest.status === 200) {
+            result.innerHTML = xrequest.responseText;
+        } else {
+            console.error("Error: HTTP request failed with status", xrequest.status);
+        }
+    }
+});

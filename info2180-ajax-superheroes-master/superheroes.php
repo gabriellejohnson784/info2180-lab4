@@ -63,10 +63,49 @@ $superheroes = [
   ], 
 ];
 
+$message = "";
+$query = filter_input(INPUT_GET, "query", FILTER_SANITIZE_STRING);
+
+if (strlen($query) > 0) {
+    $heroFound = false;
+
+    foreach ($superheroes as $superhero) {
+        if (
+            strcasecmp($superhero['alias'], $query) === 0 ||
+            strcasecmp($superhero['name'], $query) === 0
+        ) {
+            $heroFound = true;
+            $message .= "<div>";
+            $message .= "<h3>" . htmlspecialchars($superhero["alias"], ENT_QUOTES, 'UTF-8') . "</h3>";
+            $message .= "<h4>" . "A.K.A " . htmlspecialchars($superhero["name"], ENT_QUOTES, 'UTF-8') . "</h4>";
+            $message .= "<p>" . htmlspecialchars($superhero["biography"], ENT_QUOTES, 'UTF-8') . "</p>";
+            $message .= "</div>";
+        }
+    }
+
+    if (!$heroFound) {
+        $message = "<font color='red'><div><h3>Superhero not found.</h3></div>";
+    }
+}
+else {
+    
+    $message = "<ul>";
+    foreach ($superheroes as $superhero) {
+        $message .= "<li>" . htmlspecialchars($superhero['alias'], ENT_QUOTES, 'UTF-8') . "</li>";
+    }
+    $message .= "</ul>";
+}
+
+echo $message;
 ?>
 
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
+
+
+
+
+
+
+
+
+
+
